@@ -34,9 +34,8 @@ func main() {
 
 	s := gocron.NewScheduler(loc)
 
-	s.Every(1).Day().At("20:00").Do(listAllCommits, client, ctx, owner, opts)
+	s.Every(1).Day().At("14:41").Do(listAllCommits, client, ctx, owner, opts)
 	
 	s.StartBlocking()
 }
-
 
