@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"flag"
 	"fmt"
 	"os"
 	"time"
@@ -14,6 +15,11 @@ import (
 func main() {
 	godotenv.Load(".env")
 
+	var days int 
+
+	flag.IntVar(&days, "days", -1, "Time period in days")
+	flag.Parse()
+
 	loc, _ := time.LoadLocation("Asia/Kolkata")
     now := time.Now().In(loc)
     fmt.Println("Location : ", loc, " Time : ", now)
@@ -23,7 +29,7 @@ func main() {
 	owner := "ArunArivanandam"
 
 
-	date := time.Now().AddDate(0, 0, -1).Truncate(24 * time.Hour)
+	date := time.Now().AddDate(0, 0, days).Truncate(24 * time.Hour)
 	untilDate := time.Now().Truncate(24 * time.Hour)
 
 	opts := &github.CommitsListOptions{
@@ -34,7 +40,7 @@ func main() {
 
 	s := gocron.NewScheduler(loc)
 
-	s.Every(1).Day().At("14:41").Do(listAllCommits, client, ctx, owner, opts)
+	s.Every(1).Day().At("20:00").Do(listAllCommits, client, ctx, owner, opts)
 	
 	s.StartBlocking()
 }
