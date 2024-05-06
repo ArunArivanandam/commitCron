@@ -14,9 +14,9 @@ CommitCron is a cron job app written in go. It tracks commits made by a user in 
 - Clone the repo
 - Run the project
 
-````bash
+```bash
 go build -o commitCron && ./commitCron
-
+```
 ## 🤝 Contributing
 
 ### Clone the repo
