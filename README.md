@@ -26,6 +26,8 @@ git clone https://github.com/ArunArivanandam/commitCron.git
 cd commitCron
 ````
 
+**Change owner details**
+
 ### Build the project
 
 ```bash
