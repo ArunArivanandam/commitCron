@@ -3,39 +3,40 @@ package main
 import (
 	"context"
 	"fmt"
-	"log"
+	"os"
+	"time"
 
+	"github.com/go-co-op/gocron"
 	"github.com/google/go-github/v61/github"
+	"github.com/joho/godotenv"
 )
 
 func main() {
-	fmt.Println("############ my repos ############")
+	godotenv.Load(".env")
+
+	loc, _ := time.LoadLocation("Asia/Kolkata")
+    now := time.Now().In(loc)
+    fmt.Println("Location : ", loc, " Time : ", now)
 
 	ctx := context.Background()
-	client := github.NewClient(nil).WithAuthToken("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")
+	client := github.NewClient(nil).WithAuthToken(os.Getenv("ACCESS_KEY"))
+	owner := "ArunArivanandam"
 
-	repos, _, err := client.Repositories.List(ctx, "ArunArivanandam", nil)
-	if err != nil {
-		log.Fatal(err)
-	}
 
-	for _, repo := range repos {
-		fmt.Println(*repo.FullName)
-	}
-
-	fmt.Println("############################")
+	date := time.Now().AddDate(0, 0, -1).Truncate(24 * time.Hour)
+	untilDate := time.Now().Truncate(24 * time.Hour)
 
 	opts := &github.CommitsListOptions{
-		ListOptions: github.ListOptions{PerPage: 10},
+		Since: date,
+		Until: untilDate,
 	}
 
-	commits, _, err := client.Repositories.ListCommits(ctx, "ArunArivanandam", "greenlight", opts)
-	if err != nil {
-		log.Fatal(err)
-	}
 
-	for _, commit := range commits {
-		fmt.Printf("%s: %s\n", *commit.SHA, *commit.Commit.Message)
-	}
+	s := gocron.NewScheduler(loc)
 
+	s.Every(1).Day().At("20:00").Do(listAllCommits, client, ctx, owner, opts)
+	
+	s.StartBlocking()
 }
+
+
